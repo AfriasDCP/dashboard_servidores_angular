@@ -1,6 +1,13 @@
 import { map } from 'rxjs/operators';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { ZabbixService } from './services/zabbix.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalServidoresFisicosComponent } from './modals/modal-servidores-fisicos/modal-servidores-fisicos.component';
+import { ModalCpuComponent } from './modals/modal-cpu/modal-cpu.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ModalMemoriaComponent } from './modals/modal-memoria/modal-memoria.component';
+import { ModalDiscoComponent } from './modals/modal-disco/modal-disco.component';
+
 
 @Component({
   selector: 'app-root',
@@ -8,6 +15,10 @@ import { ZabbixService } from './services/zabbix.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  public loading = false;
+
+  fechaHora = new Date().toLocaleString();
+
   title = 'dashboards';
   problemasFisicosQro = 0;
   problemasFisicosTlt = 0;
@@ -33,13 +44,25 @@ export class AppComponent {
   totalDiscoTlt: any;
   totalDiscoAzteca: any;
 
+  problemasDiscoQro = 0;
+  problemasDiscoTlt = 0;
+  problemasDiscoAzteca = 0;
+
   totalMemoriaQro: any;
   totalMemoriaTlt: any;
   totalMemoriaAzteca: any;
 
+  problemasMemoriaQro = 0;
+  problemasMemoriaTlt = 0;
+  problemasMemoriaAzteca = 0;
+
   totalCpuQro: any = 0;
   totalCpuTlt: any = 0;
   totalCpuAzteca: any = 0;
+
+  problemasCpuQro = 0;
+  problemasCpuTlt = 0;
+  problemasCpuAzteca = 0;
 
   totalVirtualesWindowsQro: any = 0;
   totalVirtualesWindowsTlt: any = 0;
@@ -239,74 +262,31 @@ export class AppComponent {
 
   constructor(
     private ref: ChangeDetectorRef,
-    private api: ZabbixService
+    private api: ZabbixService,
+    private modalService: NgbModal,
+    private spinner: NgxSpinnerService
   ) {
-    console.log('constructor', this.activeIndex);
-    // CPU
-    this.getCPU(244);
-    // Memoria
-
     this.getDatos();
   }
 
-  getCPU(groupid: any) {
-    this.api.generarToken().subscribe((data: any) => {
-      this.api.getItem(data.result, groupid, 'CPU').subscribe((data: any) => {
-        console.log(data.result)
-        if (groupid === 244) {
-          this.problemasCpuVirtualesQro = data.result.length;
-        } else if (groupid === 245) {
-          this.problemasCpuVirtualesTlt = data.result.length;
-        } else if (groupid === 246) {
-          this.problemasCpuVirtualesAzteca = data.result.length;
-        }
-      })
-    })
-  }
-
   async getDatos() {
+    this.spinner.show();
     try {
       const authToken: string = await this.api.authenticate();
 
-      // const totalMemory: number = await this.api.getTotalMemory(authToken, groupId);
-      // console.log('Total de memoria del grupo de hosts:', this.formatBytes(totalMemory));
+      //******************************** *****************************************//
+      //***************************** QUERÉTARO **********************************//
+      //******************************* *****************************************//
 
-      // QUERÉTARO //
       const groupId: string = await this.api.getHostGroupId(authToken, 'KIO-QUERETARO-ESXi');
 
       //Total de equipos fisicos
       this.totalFisicosQro = await this.api.getTotalHostsInGroup(authToken, groupId);
 
       // Total de problemas fisicos
-      this.problemasFisicosQro = await this.api.getHostsWithICMPProblems(authToken, groupId);
+      this.problemasFisicosQro = await this.api.getHostsWithProblemsByGroup(authToken, groupId, 'Unavailable by ICMP ping');
       console.log('Problemas fisicos:', this.problemasFisicosQro);
       this.valueFisicosQro = 100 - ((this.problemasFisicosQro * 100) / this.totalFisicosQro);
-
-      // Total de virtuales
-      let arr_virtualesQro = await this.api.getTotalVirtuales(authToken, groupId);
-
-      // Obtengo el total de registros con el estado 'running' para obtener el total de virtuales
-      let virtualesLinuxQro = arr_virtualesQro.filter((virtual: any) => virtual.lastvalue.includes('Linux'));
-      this.totalVirtualesLinuxQro = virtualesLinuxQro.length;
-
-      // Total de problemas virtuales
-      let virtualesDownQro = arr_virtualesQro.filter((virtual: any) => virtual.lastvalue === 'not running');
-      this.problemasVirtualesQro = virtualesDownQro.length;
-
-
-      // MariaDB
-
-      this.arribaMariaDBQro = await this.api.getTotalHostsInGroupBD(authToken, 'MARIADB-SRV', 'Sitio', 'Queretaro');
-
-      // MongoDB
-      this.arribaMongoDBQro = await this.api.getTotalHostsInGroupBD(authToken, 'MONGO-SRV', 'Sitio', 'Queretaro');
-
-      // MySQL
-      this.arribaMySQLQro = await this.api.getTotalHostsInGroupBD(authToken, 'MYSQL-SRV', 'Sitio', 'Queretaro');
-
-      // SQL Server
-      this.arribaSQLServerQro = await this.api.getTotalHostsInGroupBD(authToken, 'SQLSERVER-SRV', 'Sitio', 'Queretaro');
-
 
       // Memoria
       this.totalMemoriaQro = await this.api.getTotalMemory(authToken, groupId);
@@ -332,14 +312,54 @@ export class AppComponent {
       this.utilizadoCpuQro = parseInt(this.utilizadoCpuQro);
       this.disponibleCpuQro = parseInt(this.disponibleCpuQro);
 
-      // TULTITLAN //
+      // Total de problemas CPU Físicos Qro
+      this.problemasCpuQro = await this.api.getHostsWithProblemsByGroup(authToken, groupId, 'Cpu less than');
+
+      // Total de problemas Memoria Físicos Qro
+      this.problemasMemoriaQro = await this.api.getHostsWithProblemsByGroup(authToken, groupId, 'Available Memory is less than');
+
+      // Total de problemas DD Físicos Qro
+      this.problemasDiscoQro = await this.api.getHostsWithProblemsByGroup(authToken, groupId, 'Free disk space is less than');
+
+
+      // // Total de virtuales
+      // let arr_virtualesQro = await this.api.getTotalVirtuales(authToken, groupId);
+
+      // // Obtengo el total de registros con el estado 'running' para obtener el total de virtuales
+      // let virtualesLinuxQro = arr_virtualesQro.filter((virtual: any) => virtual.lastvalue.includes('Linux'));
+      // this.totalVirtualesLinuxQro = virtualesLinuxQro.length;
+
+      // // Total de problemas virtuales
+      // let virtualesDownQro = arr_virtualesQro.filter((virtual: any) => virtual.lastvalue === 'not running');
+      // this.problemasVirtualesQro = virtualesDownQro.length;
+
+
+      // MariaDB
+
+      this.arribaMariaDBQro = await this.api.getTotalHostsInGroupBD(authToken, 'MARIADB-SRV', 'Sitio', 'Queretaro');
+
+      // MongoDB
+      this.arribaMongoDBQro = await this.api.getTotalHostsInGroupBD(authToken, 'MONGO-SRV', 'Sitio', 'Queretaro');
+
+      // MySQL
+      this.arribaMySQLQro = await this.api.getTotalHostsInGroupBD(authToken, 'MYSQL-SRV', 'Sitio', 'Queretaro');
+
+      // SQL Server
+      this.arribaSQLServerQro = await this.api.getTotalHostsInGroupBD(authToken, 'SQLSERVER-SRV', 'Sitio', 'Queretaro');
+
+
+
+      //******************************** *****************************************//
+      //***************************** TULTITLAN **********************************//
+      //******************************* *****************************************//
+
       const groupIdTlt: string = await this.api.getHostGroupId(authToken, 'KIO-TULTITLAN-ESXi');
 
       //Total de equipos fisicos
       this.totalFisicosTlt = await this.api.getTotalHostsInGroup(authToken, groupIdTlt);
 
       // Total de problemas fisicos
-      this.problemasFisicosTlt = await this.api.getHostsWithICMPProblems(authToken, groupIdTlt);
+      this.problemasFisicosTlt = await this.api.getHostsWithProblemsByGroup(authToken, groupIdTlt, 'Unavailable by ICMP ping');
       console.log('Problemas fisicos:', this.problemasFisicosTlt);
 
       this.valueFisicosTlt = 100 - ((this.problemasFisicosTlt * 100) / this.totalFisicosTlt);
@@ -368,14 +388,28 @@ export class AppComponent {
       this.utilizadoCpuTlt = parseInt(this.utilizadoCpuTlt);
       this.disponibleCpuTlt = parseInt(this.disponibleCpuTlt);
 
-      // AZTECA //
+      // Total de problemas CPU Físicos Tlt
+      this.problemasCpuTlt = await this.api.getHostsWithProblemsByGroup(authToken, groupIdTlt, 'Cpu less than');
+
+      // Total de problemas Memoria Físicos Tlt
+      this.problemasMemoriaTlt = await this.api.getHostsWithProblemsByGroup(authToken, groupIdTlt, 'Available Memory is less than');
+
+      // Total de problemas DD Físicos Tlt
+      this.problemasDiscoTlt = await this.api.getHostsWithProblemsByGroup(authToken, groupIdTlt, 'Free disk space is less than');
+
+
+
+      //******************************** *****************************************//
+      //******************************* AZTECA **********************************//
+      //******************************* *****************************************//
+
       const groupIdAzteca: string = await this.api.getHostGroupId(authToken, 'KIO-TV-AZTECA-AJUSCO-ESXi');
 
       //Total de equipos fisicos
       this.totalFisicosAzteca = await this.api.getTotalHostsInGroup(authToken, groupIdAzteca);
 
       // Total de problemas fisicos
-      this.problemasFisicosAzteca = await this.api.getHostsWithICMPProblems(authToken, groupIdAzteca);
+      this.problemasFisicosAzteca = await this.api.getHostsWithProblemsByGroup(authToken, groupIdAzteca, 'Unavailable by ICMP ping');
       console.log('Problemas fisicos:', this.problemasFisicosAzteca);
 
       this.valueFisicosAzteca = 100 - ((this.problemasFisicosAzteca * 100) / this.totalFisicosAzteca);
@@ -404,11 +438,27 @@ export class AppComponent {
       this.utilizadoCpuAzteca = parseInt(this.utilizadoCpuAzteca);
       this.disponibleCpuAzteca = parseInt(this.disponibleCpuAzteca);
 
+      // Total de problemas CPU Físicos Azteca
+      this.problemasCpuAzteca = await this.api.getHostsWithProblemsByGroup(authToken, groupIdAzteca, 'Cpu less than');
 
+      // Total de problemas Memoria Físicos Azteca
+      this.problemasMemoriaAzteca = await this.api.getHostsWithProblemsByGroup(authToken, groupIdAzteca, 'Available Memory is less than');
+
+      // Total de problemas DD Físicos Azteca
+      this.problemasDiscoAzteca = await this.api.getHostsWithProblemsByGroup(authToken, groupIdAzteca, 'Free disk space is less than');
+
+
+      this.spinner.hide();
+
+      setTimeout(()=>{                           // <<<---using ()=> syntax
+        this.getDatos();
+        this.fechaHora = new Date().toLocaleString();
+    }, 300000);
 
 
     } catch (error) {
       console.error('Error:', error);
+      this.spinner.hide();
     }
   }
 
@@ -434,6 +484,123 @@ export class AppComponent {
       return true;
     } else {
       return false;
+    }
+  }
+
+  openModalFisicos(tipo: any, grupo: any, sitio: any) {
+    console.log(tipo, grupo);
+    const modalFisicos = this.modalService.open(ModalServidoresFisicosComponent, {
+      size: "xl",
+      centered: true,
+      scrollable: true,
+      backdrop: "static",
+      keyboard: false,
+    });
+
+    modalFisicos.componentInstance.Tipo = tipo;
+    modalFisicos.componentInstance.Grupo = grupo;
+    modalFisicos.componentInstance.Sitio = sitio;
+
+    if (sitio == 'QUERÉTARO') {
+      modalFisicos.componentInstance.totalFisicos = this.totalFisicosQro;
+      modalFisicos.componentInstance.problemasFisicos = this.problemasFisicosQro;
+    } else if (sitio == 'TULTITLÁN') {
+      modalFisicos.componentInstance.totalFisicos = this.totalFisicosTlt;
+      modalFisicos.componentInstance.problemasFisicos = this.problemasFisicosTlt;
+    } else if (sitio == 'TV AZTECA AJUSCO') {
+      modalFisicos.componentInstance.totalFisicos = this.totalFisicosAzteca;
+      modalFisicos.componentInstance.problemasFisicos = this.problemasFisicosAzteca;
+    }
+
+
+  }
+
+  openModalCpu (tipo: any, grupo: any, sitio: any) {
+    console.log(tipo, grupo);
+    const modal = this.modalService.open(ModalCpuComponent, {
+      size: "xl",
+      centered: true,
+      scrollable: true,
+      backdrop: "static",
+      keyboard: false,
+    });
+
+    modal.componentInstance.Tipo = tipo;
+    modal.componentInstance.Grupo = grupo;
+    modal.componentInstance.Sitio = sitio;
+
+    if (sitio == 'QUERÉTARO') {
+      modal.componentInstance.totalCpu = this.totalCpuQro;
+      modal.componentInstance.disponibleCpu = this.disponibleCpuQro;
+      modal.componentInstance.utilizadoCpu = this.utilizadoCpuQro;
+    } else if (sitio == 'TULTITLÁN') {
+      modal.componentInstance.totalCpu = this.totalCpuTlt;
+      modal.componentInstance.disponibleCpu = this.disponibleCpuTlt;
+      modal.componentInstance.utilizadoCpu = this.utilizadoCpuTlt;
+
+    } else if (sitio == 'TV AZTECA AJUSCO') {
+      modal.componentInstance.totalCpu = this.totalCpuAzteca;
+      modal.componentInstance.disponibleCpu = this.disponibleCpuAzteca;
+      modal.componentInstance.utilizadoCpu = this.utilizadoCpuAzteca;
+    }
+  }
+
+  openModalMemoria (tipo: any, grupo: any, sitio: any) {
+    console.log(tipo, grupo);
+    const modal = this.modalService.open(ModalMemoriaComponent, {
+      size: "xl",
+      centered: true,
+      scrollable: true,
+      backdrop: "static",
+      keyboard: false,
+    });
+
+    modal.componentInstance.Tipo = tipo;
+    modal.componentInstance.Grupo = grupo;
+    modal.componentInstance.Sitio = sitio;
+
+    if (sitio == 'QUERÉTARO') {
+      modal.componentInstance.totalMemoria = this.totalMemoriaQro;
+      modal.componentInstance.disponibleMemoria = this.disponibleMemoriaQro;
+      modal.componentInstance.utilizadoMemoria = this.utilizadoMemoriaQro;
+    } else if (sitio == 'TULTITLÁN') {
+      modal.componentInstance.totalMemoria = this.totalMemoriaTlt;
+      modal.componentInstance.disponibleMemoria = this.disponibleMemoriaTlt;
+      modal.componentInstance.utilizadoMemoria = this.utilizadoMemoriaTlt;
+
+    } else if (sitio == 'TV AZTECA AJUSCO') {
+      modal.componentInstance.totalMemoria = this.totalMemoriaAzteca;
+      modal.componentInstance.disponibleMemoria = this.disponibleMemoriaAzteca;
+      modal.componentInstance.utilizadoMemoria = this.utilizadoMemoriaAzteca;
+    }
+  }
+
+  openModalDisco(tipo: any, grupo: any, sitio: any) {
+    const modal = this.modalService.open(ModalDiscoComponent, {
+      size: "xl",
+      centered: true,
+      scrollable: true,
+      backdrop: "static",
+      keyboard: false,
+    });
+
+    modal.componentInstance.Tipo = tipo;
+    modal.componentInstance.Grupo = grupo;
+    modal.componentInstance.Sitio = sitio;
+
+    if (sitio == 'QUERÉTARO') {
+      modal.componentInstance.totalDisco = this.totalDiscoQro;
+      modal.componentInstance.disponibleDisco = this.disponibleDiscoQro;
+      modal.componentInstance.utilizadoDisco = this.utilizadoDiscoQro;
+    } else if (sitio == 'TULTITLÁN') {
+      modal.componentInstance.totalDisco = this.totalDiscoTlt;
+      modal.componentInstance.disponibleDisco = this.disponibleDiscoTlt;
+      modal.componentInstance.utilizadoDisco = this.utilizadoDiscoTlt;
+
+    } else if (sitio == 'TV AZTECA AJUSCO') {
+      modal.componentInstance.totalDisco = this.totalDiscoAzteca;
+      modal.componentInstance.disponibleDisco = this.disponibleDiscoAzteca;
+      modal.componentInstance.utilizadoDisco = this.utilizadoDiscoAzteca;
     }
   }
 

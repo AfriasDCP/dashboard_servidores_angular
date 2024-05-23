@@ -1,0 +1,65 @@
+<div class="modal-header d-flex justify-content-between align-items-center">
+  <h4 class="modal-title">Detalles de CPU <b>{{Sitio}}</b></h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="container-fluid">
+  <div class="row m-4">
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center">
+      <div>
+        <i class="fa-solid fa-microchip fa-3x text-primary"></i>
+        <h4 class="mt-2">{{totalCpu}} Ghz</h4>
+        <h4 class="text-secondary">CPU</h4>
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center">
+      <div>
+        <h4 class="mt-2">{{disponibleCpu}} Ghz</h4>
+        <h4 class="text-secondary">Disponible</h4>
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center">
+      <div>
+        <h4 class="mt-2">{{utilizadoCpu}} Ghz</h4>
+        <h4 class="text-secondary">Utilizado</h4>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4 mb-4">
+    <div class="col-12">
+      <p-table [value]="hosts" styleClass="p-datatable-gridlines p-datatable-striped"
+      [rows]="20"
+      [rowsPerPageOptions]="[20, 50, 100, 300, 500, 1000]"
+      [scrollable]="true"
+    scrollHeight="400px">
+        <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name">
+                Host <p-sortIcon field="name" />
+              </th>
+              <th>Estado</th>
+              <th pSortableColumn="ip">
+                IP <p-sortIcon field="ip" />
+              </th>
+              <th>CPU</th>
+              <th>Uso CPU</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-host>
+            <tr>
+              <td [ngClass]="{'color-red': hostStatus[host.hostid] != '', 'text-white': hostStatus[host.hostid] == ''}">{{ host.name }}</td>
+              <td>
+                <i class="fa-solid fa-triangle-exclamation color-red fa-2x" title = "{{hostStatus[host.hostid]}}" *ngIf="hostStatus[host.hostid] != ''"></i>
+              </td>
+              <td>{{ host.interfaces[0].ip }}</td>
+              <td>{{ hostCpu[host.hostid]| number : '1.2-2' }} Ghz</td>
+              <td>{{ hostCpuUsado[host.hostid] | number : '1.2-2' }} Ghz</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    </div>
+  </div>
+</div>

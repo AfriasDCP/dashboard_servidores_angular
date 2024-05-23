@@ -12,6 +12,10 @@
   color: red;
 }
 
+.color-normal {
+  color: #fff;
+}
+
 .color-warning {
   color: rgb(245, 128, 62);
 }
@@ -40,6 +44,11 @@ a {
     height: 50px !important;
 }
 
+.img-icon {
+  width: 30px;
+    height: 30px !important;
+}
+
 .border-lime {
   border: 1px solid lime;
   padding: 10px;
@@ -52,6 +61,10 @@ a {
   border-radius: 0.375rem;
 }
 
+.pointer-events-none {
+  pointer-events: none;
+}
+
 .text-500 {
   color: #5e6e82 !important;
 }
@@ -60,7 +73,17 @@ a {
   color: #5e6e82 !important;
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
 
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+h5 span {
+  font-size: 1.2rem;
+}
 ::ng-deep {
   .p-accordion-header-link {
     color: #fff !important;
@@ -71,5 +94,25 @@ a {
     border: 1px solid red;
   }
 
+  .p-knob-text::after {
+    content: '%';
+  }
 
+
+}
+
+:host ::ng-deep .knob text.p-knob-text {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+:host ::ng-deep .knob text.p-knob-text {
+  &::after {
+    content: '%';
+  }
+  &::before {
+    content: '%';
+  }
+  font-size: 30px;
+  font-weight: bold;
 }

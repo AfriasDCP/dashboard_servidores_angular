@@ -4,8 +4,8 @@
       <img src="assets/img/logo_rc.png">
     </div>
     <div class="col-12 col-lg-6 text-right d-flex justify-content-center align-items-center">
-      <span class="text-white">ÚLTIMA ACTUALIZACIÓN</span>
-      <span class="text-white">{{activeIndex.lenght}}</span>
+      <span class="text-white mr-2">ÚLTIMA ACTUALIZACIÓN </span>
+      <span class="text-white ml-2"> {{fechaHora}}</span>
     </div>
   </div>
 
@@ -72,29 +72,39 @@
                   <div class="card-body">
                     <div class="row">
                       <!-- Div Totales -->
-                      <div class="col-4 d-flex justify-content-center align-items-center"
+                      <div class="col-12 col-md-4 d-flex justify-content-center align-items-center cursor-pointer"
+                        (click)="openModalFisicos('FISICOS', 'KIO-QUERETARO-ESXi', 'QUERÉTARO')"
                         [ngClass]="{'border-lime': problemasFisicosQro == 0, 'border-red-inner': problemasFisicosQro > 0 }">
                         <div class="row">
-                          <div class="col-6 d-flex justify-content-start align-items-center">
-                            <h1>{{totalFisicosQro}}</h1>
-                          </div>
-                          <div class="col-6 d-flex justify-content-end align-items-center">
+                          <div class="col-12 d-flex justify-content-end align-items-center">
                             <img src="assets/img/server_fisico.png" class="img-server">
                           </div>
                           <div class="col-12 d-flex justify-content-center align-items-center mt-3">
-                            <p-knob [(ngModel)]="valueFisicosQro" valueColor="lime" rangeColor="red"></p-knob>
+                            <p-knob [(ngModel)]="valueFisicosQro" valueColor="lime" rangeColor="red"
+                              class="pointer-events-none" [readonly]="true" valueTemplate="{value}%"></p-knob>
+                          </div>
+                          <div class="col-6 d-flex justify-content-evenly align-items-center">
+                            <h3 class="mb-0">{{totalFisicosQro - problemasFisicosQro}}</h3>
+                            <img src="assets/img/UP.svg" class="img-icon">
+                          </div>
+
+                          <div class="col-6 d-flex justify-content-evenly align-items-center">
+                            <h3 class="mb-0">{{problemasFisicosQro}}</h3>
+                            <img src="assets/img/DOWN.svg" class="img-icon">
                           </div>
                         </div>
                       </div>
                       <!-- Fin Div Totales -->
                       <!-- Div métricas -->
-                      <div class="col-md-8">
+                      <div class="col-12 col-md-8">
                         <div class="row h-100 justify-content-between g-0"
                           [ngClass]="{'border-lime': problemasFisicosQro == 0, 'border-red-inner': problemasFisicosQro > 0 }">
-                          <div class="col-5 col-sm-6 col-xxl pe-2">
+                          <div class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                            (click)="openModalDisco('FISICOS', 'KIO-QUERETARO-ESXi', 'QUERÉTARO')">
                             <h6 class="text-500 mb-0">DISCO</h6>
                             <h5>
-                              <i class="fa-solid fa-hard-drive" style="color: #ffffff;"></i>
+                              <i class="fa-solid fa-hard-drive"
+                                [ngClass]="{'color-red': problemasDiscoQro > 0, 'color-normal': problemasDiscoQro == 0}"></i>
                               <br>
                               <span id="span_total_disco_queretaro">{{totalDiscoQro}}</span>
                             </h5>
@@ -105,10 +115,12 @@
                                 id="span_total_disco_queretaro_usado">{{utilizadoDiscoQro}}</span>
                             </h6>
                           </div>
-                          <div id="icon_dash" class="col-5 col-sm-6 col-xxl pe-2">
+                          <div id="icon_dash" class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                          (click)="openModalMemoria('FISICOS', 'KIO-QUERETARO-ESXi', 'QUERÉTARO')">
                             <h6 class="text-500 mb-0">MEMORIA</h6>
                             <h5>
-                              <i class="fa-sharp fa-solid fa-memory" style="color: #ffffff;"></i>
+                              <i class="fa-sharp fa-solid fa-memory"
+                                [ngClass]="{'color-red': problemasMemoriaQro > 0, 'color-normal': problemasMemoriaQro == 0}"></i>
                               <br>
                               <span id="span_total_memoria_queretaro" onclick="">{{totalMemoriaQro}}</span>
                             </h5>
@@ -119,20 +131,22 @@
                                 id="span_total_memoria_queretaro_usado">{{utilizadoMemoriaQro}}</span>
                             </h6>
                           </div>
-                          <div id="icon_dash" class="col-5 col-sm-6 col-xxl pe-2">
+                          <div id="icon_dash" class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                            (click)="openModalCpu('FISICOS', 'KIO-QUERETARO-ESXi', 'QUERÉTARO')">
                             <h6 class="text-500 mb-0">CPU</h6>
-                            <h5><i class="fa-solid fa-microchip" style="color: #ffffff;"></i>
+                            <h5><i class="fa-solid fa-microchip"
+                                [ngClass]="{'color-red': problemasCpuQro > 0, 'color-normal': problemasCpuQro == 0}"></i>
                               <br>
-                              <span id="span_total_cpu_queretaro">{{totalCpuQro}} GHz</span>
+                              <span id="span_total_cpu_queretaro">{{totalCpuQro}} Ghz</span>
                             </h5>
                             <h6>
                               <span class="text-500 mb-0" id="span_etiqueta">DISPONIBLE: </span>
                               <br>
-                              <span id="span_total_cpu_queretaro_disponible">{{disponibleCpuQro}} GHz</span>
+                              <span id="span_total_cpu_queretaro_disponible">{{disponibleCpuQro}} Ghz</span>
                               <br>
                               <span id="span_etiqueta">UTILIZADO: </span>
                               <br>
-                              <span id="span_total_cpu_queretaro_usado">{{utilizadoCpuQro}} GHz</span>
+                              <span id="span_total_cpu_queretaro_usado">{{utilizadoCpuQro}} Ghz</span>
                             </h6>
                           </div>
                         </div>
@@ -149,29 +163,45 @@
                   <div class="card-body">
                     <div class="row">
                       <!-- Div Totales -->
-                      <div class="col-4 d-flex justify-content-center align-items-center"
+                      <div class="col-12 col-md-4 d-flex justify-content-center align-items-center cursor-pointer"
+                        (click)="openModalFisicos('FISICOS', 'KIO-TULTITLAN-ESXi', 'TULTITLÁN')"
                         [ngClass]="{'border-lime': problemasFisicosTlt == 0, 'border-red-inner': problemasFisicosTlt > 0}">
                         <div class="row">
-                          <div class="col-6 d-flex justify-content-start align-items-center">
-                            <h1>{{totalFisicosTlt}}</h1>
+                          <div class="col-12 d-flex justify-content-end align-items-center">
+                            <img src="assets/img/server_fisico.png" class="img-server">
+                          </div>
+                          <!-- <div class="col-6 d-flex justify-content-start align-items-center">
+                            <h3>{{totalFisicosTlt}}</h3>
                           </div>
                           <div class="col-6 d-flex justify-content-end align-items-center">
                             <img src="assets/img/server_fisico.png" class="img-server">
-                          </div>
+                          </div> -->
                           <div class="col-12 d-flex justify-content-center align-items-center mt-3">
-                            <p-knob [(ngModel)]="valueFisicosTlt" valueColor="lime" rangeColor="red"></p-knob>
+                            <p-knob [(ngModel)]="valueFisicosTlt" valueColor="lime" rangeColor="red"
+                              class="pointer-events-none" [readonly]="true" valueTemplate="{value}%"></p-knob>
                           </div>
+                          <div class="col-6 d-flex justify-content-evenly align-items-center">
+                            <h3 class="mb-0">{{totalFisicosTlt - problemasFisicosTlt}}</h3>
+                            <img src="assets/img/UP.svg" class="img-icon">
+                          </div>
+                          <div class="col-6 d-flex justify-content-evenly align-items-center">
+                            <h3 class="mb-0">{{problemasFisicosTlt}}</h3>
+                            <img src="assets/img/DOWN.svg" class="img-icon">
+                          </div>
+
                         </div>
                       </div>
                       <!-- Fin Div Totales -->
                       <!-- Div métricas -->
-                      <div class="col-md-8">
+                      <div class="col-12 col-md-8">
                         <div class="row h-100 justify-content-between g-0"
                           [ngClass]="{'border-lime': problemasFisicosTlt == 0, 'border-red-inner': problemasFisicosTlt > 0}">
-                          <div class="col-5 col-sm-6 col-xxl pe-2">
+                          <div class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                          (click)="openModalDisco('FISICOS', 'KIO-TULTITLAN-ESXi', 'TULTITLÁN')">
                             <h6 class="text-500 mb-0">DISCO</h6>
                             <h5>
-                              <i class="fa-solid fa-hard-drive" style="color: #ffffff;"></i>
+                              <i class="fa-solid fa-hard-drive"
+                                [ngClass]="{'color-red': problemasDiscoTlt > 0, 'color-normal': problemasDiscoTlt == 0}"></i>
                               <br>
                               <span id="span_total_disco_queretaro">{{totalDiscoTlt}}</span>
                             </h5>
@@ -182,10 +212,12 @@
                                 id="span_total_disco_queretaro_usado">{{utilizadoDiscoTlt}}</span>
                             </h6>
                           </div>
-                          <div id="icon_dash" class="col-5 col-sm-6 col-xxl pe-2">
+                          <div id="icon_dash" class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                          (click)="openModalMemoria('FISICOS', 'KIO-TULTITLAN-ESXi', 'TULTITLÁN')">
                             <h6 class="text-500 mb-0">MEMORIA</h6>
                             <h5>
-                              <i class="fa-sharp fa-solid fa-memory" style="color: #ffffff;"></i>
+                              <i class="fa-sharp fa-solid fa-memory"
+                                [ngClass]="{'color-red': problemasMemoriaTlt > 0, 'color-normal': problemasMemoriaTlt == 0}"></i>
                               <br>
                               <span id="span_total_memoria_queretaro" onclick="">{{totalMemoriaTlt}}</span>
                             </h5>
@@ -196,20 +228,22 @@
                                 id="span_total_memoria_queretaro_usado">{{utilizadoMemoriaTlt}}</span>
                             </h6>
                           </div>
-                          <div id="icon_dash" class="col-5 col-sm-6 col-xxl pe-2">
+                          <div id="icon_dash" class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                          (click)="openModalCpu('FISICOS', 'KIO-TULTITLAN-ESXi', 'TULTITLÁN')">
                             <h6 class="text-500 mb-0">CPU</h6>
-                            <h5><i class="fa-solid fa-microchip" style="color: #ffffff;"></i>
+                            <h5><i class="fa-solid fa-microchip"
+                                [ngClass]="{'color-red': problemasCpuTlt > 0, 'color-normal': problemasCpuTlt == 0}"></i>
                               <br>
-                              <span id="span_total_cpu_queretaro">{{totalCpuTlt}} GHz</span>
+                              <span id="span_total_cpu_queretaro">{{totalCpuTlt}} Ghz</span>
                             </h5>
                             <h6>
                               <span class="text-500 mb-0" id="span_etiqueta">DISPONIBLE: </span>
                               <br>
-                              <span id="span_total_cpu_queretaro_disponible">{{disponibleCpuTlt}} GHz</span>
+                              <span id="span_total_cpu_queretaro_disponible">{{disponibleCpuTlt}} Ghz</span>
                               <br>
                               <span id="span_etiqueta">UTILIZADO: </span>
                               <br>
-                              <span id="span_total_cpu_queretaro_usado">{{utilizadoCpuTlt}} GHz</span>
+                              <span id="span_total_cpu_queretaro_usado">{{utilizadoCpuTlt}} Ghz</span>
                             </h6>
                           </div>
                         </div>
@@ -226,29 +260,38 @@
                   <div class="card-body">
                     <div class="row">
                       <!-- Div Totales -->
-                      <div class="col-4 d-flex justify-content-center align-items-center"
+                      <div class="col-12 col-md-4 d-flex justify-content-center align-items-center cursor-pointer"
+                        (click)="openModalFisicos('FISICOS', 'KIO-TV-AZTECA-AJUSCO-ESXi', 'TV AZTECA AJUSCO')"
                         [ngClass]="{'border-lime': problemasFisicosAzteca == 0, 'border-red-inner': problemasFisicosAzteca > 0}">
                         <div class="row">
-                          <div class="col-6 d-flex justify-content-start align-items-center">
-                            <h1>{{totalFisicosAzteca}}</h1>
-                          </div>
-                          <div class="col-6 d-flex justify-content-end align-items-center">
+                          <div class="col-12 d-flex justify-content-end align-items-center">
                             <img src="assets/img/server_fisico.png" class="img-server">
                           </div>
                           <div class="col-12 d-flex justify-content-center align-items-center mt-3">
-                            <p-knob [(ngModel)]="valueFisicosAzteca" valueColor="lime" rangeColor="red"></p-knob>
+                            <p-knob [(ngModel)]="valueFisicosAzteca" valueColor="lime" rangeColor="red"
+                              class="pointer-events-none" [readonly]="true" valueTemplate="{value}%"></p-knob>
+                          </div>
+                          <div class="col-6 d-flex justify-content-evenly align-items-center">
+                            <h3 class="mb-0">{{totalFisicosAzteca - problemasFisicosAzteca}}</h3>
+                            <img src="assets/img/UP.svg" class="img-icon">
+                          </div>
+                          <div class="col-6 d-flex justify-content-evenly align-items-center">
+                            <h3 class="mb-0">{{problemasFisicosAzteca}}</h3>
+                            <img src="assets/img/DOWN.svg" class="img-icon">
                           </div>
                         </div>
                       </div>
                       <!-- Fin Div Totales -->
                       <!-- Div métricas -->
-                      <div class="col-md-8">
+                      <div class="col-12 col-md-8">
                         <div class="row h-100 justify-content-between g-0"
                           [ngClass]="{'border-lime': problemasFisicosAzteca == 0, 'border-red-inner': problemasFisicosAzteca > 0}">
-                          <div class="col-5 col-sm-6 col-xxl pe-2">
+                          <div class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                          (click)="openModalDisco('FISICOS', 'KIO-TV-AZTECA-AJUSCO-ESXi', 'TV AZTECA AJUSCO')">
                             <h6 class="text-500 mb-0">DISCO</h6>
                             <h5>
-                              <i class="fa-solid fa-hard-drive" style="color: #ffffff;"></i>
+                              <i class="fa-solid fa-hard-drive"
+                                [ngClass]="{'color-red': problemasDiscoAzteca > 0, 'color-normal': problemasDiscoAzteca == 0}"></i>
                               <br>
                               <span id="span_total_disco_queretaro">{{totalDiscoAzteca}}</span>
                             </h5>
@@ -259,10 +302,12 @@
                                 id="span_total_disco_queretaro_usado">{{utilizadoDiscoAzteca}}</span>
                             </h6>
                           </div>
-                          <div id="icon_dash" class="col-5 col-sm-6 col-xxl pe-2">
+                          <div id="icon_dash" class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                          (click)="openModalMemoria('FISICOS', 'KIO-TV-AZTECA-AJUSCO-ESXi', 'TV AZTECA AJUSCO')">
                             <h6 class="text-500 mb-0">MEMORIA</h6>
                             <h5>
-                              <i class="fa-sharp fa-solid fa-memory" style="color: #ffffff;"></i>
+                              <i class="fa-sharp fa-solid fa-memory"
+                                [ngClass]="{'color-red': problemasMemoriaAzteca > 0, 'color-normal': problemasMemoriaAzteca == 0}"></i>
                               <br>
                               <span id="span_total_memoria_queretaro" onclick="">{{totalMemoriaAzteca}}</span>
                             </h5>
@@ -273,20 +318,22 @@
                                 id="span_total_memoria_queretaro_usado">{{utilizadoMemoriaAzteca}}</span>
                             </h6>
                           </div>
-                          <div id="icon_dash" class="col-5 col-sm-6 col-xxl pe-2">
+                          <div id="icon_dash" class="col-12 col-sm-12 col-xxl-4 pe-2 cursor-pointer"
+                          (click)="openModalCpu('FISICOS', 'KIO-TV-AZTECA-AJUSCO-ESXi', 'TV AZTECA AJUSCO')">
                             <h6 class="text-500 mb-0">CPU</h6>
-                            <h5><i class="fa-solid fa-microchip" style="color: #ffffff;"></i>
+                            <h5><i class="fa-solid fa-microchip"
+                                [ngClass]="{'color-red': problemasCpuAzteca > 0, 'color-normal': problemasCpuAzteca == 0}"></i>
                               <br>
-                              <span id="span_total_cpu_queretaro">{{totalCpuAzteca}} GHz</span>
+                              <span id="span_total_cpu_queretaro">{{totalCpuAzteca}} Ghz</span>
                             </h5>
                             <h6>
                               <span class="text-500 mb-0" id="span_etiqueta">DISPONIBLE: </span>
                               <br>
-                              <span id="span_total_cpu_queretaro_disponible">{{disponibleCpuAzteca}} GHz</span>
+                              <span id="span_total_cpu_queretaro_disponible">{{disponibleCpuAzteca}} Ghz</span>
                               <br>
                               <span id="span_etiqueta">UTILIZADO: </span>
                               <br>
-                              <span id="span_total_cpu_queretaro_usado">{{utilizadoCpuAzteca}} GHz</span>
+                              <span id="span_total_cpu_queretaro_usado">{{utilizadoCpuAzteca}} Ghz</span>
                             </h6>
                           </div>
                         </div>
@@ -303,7 +350,8 @@
         <!-- Fin Accordion Físicos -->
 
         <!-- Accordion Virtuales -->
-        <p-accordionTab [ngClass]="{'border-red': problemasVirtualesQro > 0 || problemasVirtualesTlt > 0 || problemasVirtualesAzteca > 0}">
+        <p-accordionTab
+          [ngClass]="{'border-red': problemasVirtualesQro > 0 || problemasVirtualesTlt > 0 || problemasVirtualesAzteca > 0}">
           <!-- Header Virtuales -->
           <ng-template pTemplate="header">
             <div class="row w-100">
@@ -349,7 +397,9 @@
                               <div class="card-body">
                                 <div class="row h-100 justify-content-between g-0">
                                   <div class="col-4 col-sm-6 col-xxl pe-2" style="text-align: left !important;">
-                                    <h1><span id="span_total_virtuales_queretaro_windows">{{totalVirtualesWindowsQro}}</span></h1>
+                                    <h3><span
+                                        id="span_total_virtuales_queretaro_windows">{{totalVirtualesWindowsQro}}</span>
+                                    </h3>
                                   </div>
                                   <div class="col-auto position-relative">
                                     <img src="assets/img/Windows2.svg" style="width: 50px; height: 50px;">
@@ -416,7 +466,8 @@
                               <div class="card-body">
                                 <div class="row h-100 justify-content-between g-0">
                                   <div class="col-5 col-sm-6 col-xxl pe-2" style="text-align: left !important;">
-                                    <h1><span id="span_total_virtuales_queretaro_linux">{{totalVirtualesLinuxQro}}</span></h1>
+                                    <h3><span
+                                        id="span_total_virtuales_queretaro_linux">{{totalVirtualesLinuxQro}}</span></h3>
                                   </div>
                                   <div class="col-auto position-relative">
                                     <img src="assets/img/linux3.svg" style="width: 60px; height: 60px;">
@@ -495,7 +546,7 @@
                               <div class="card-body">
                                 <div class="row h-100 justify-content-between g-0">
                                   <div class="col-4 col-sm-6 col-xxl pe-2" style="text-align: left !important;">
-                                    <h1><span id="span_total_virtuales_queretaro_windows">0</span></h1>
+                                    <h3><span id="span_total_virtuales_queretaro_windows">0</span></h3>
                                   </div>
                                   <div class="col-auto position-relative">
                                     <img src="assets/img/Windows2.svg" style="width: 50px; height: 50px;">
@@ -562,7 +613,7 @@
                               <div class="card-body">
                                 <div class="row h-100 justify-content-between g-0">
                                   <div class="col-5 col-sm-6 col-xxl pe-2" style="text-align: left !important;">
-                                    <h1><span id="span_total_virtuales_queretaro_linux">0</span></h1>
+                                    <h3><span id="span_total_virtuales_queretaro_linux">0</span></h3>
                                   </div>
                                   <div class="col-auto position-relative">
                                     <img src="assets/img/linux3.svg" style="width: 60px; height: 60px;">
@@ -641,7 +692,7 @@
                               <div class="card-body">
                                 <div class="row h-100 justify-content-between g-0">
                                   <div class="col-4 col-sm-6 col-xxl pe-2" style="text-align: left !important;">
-                                    <h1><span id="span_total_virtuales_queretaro_windows">0</span></h1>
+                                    <h3><span id="span_total_virtuales_queretaro_windows">0</span></h3>
                                   </div>
                                   <div class="col-auto position-relative">
                                     <img src="assets/img/Windows2.svg" style="width: 50px; height: 50px;">
@@ -708,7 +759,7 @@
                               <div class="card-body">
                                 <div class="row h-100 justify-content-between g-0">
                                   <div class="col-5 col-sm-6 col-xxl pe-2" style="text-align: left !important;">
-                                    <h1><span id="span_total_virtuales_queretaro_linux">0</span></h1>
+                                    <h3><span id="span_total_virtuales_queretaro_linux">0</span></h3>
                                   </div>
                                   <div class="col-auto position-relative">
                                     <img src="assets/img/linux3.svg" style="width: 60px; height: 60px;">
@@ -989,8 +1040,7 @@
                                           <div class="row mt-2">
                                             <div class="col-3 " style="text-align: center;">
                                               <p class="h6"><svg xmlns="http://www.w3.org/2000/svg"
-                                                  viewBox="65.1 102.4 367.4 295.19999999999993" width="80"
-                                                  height="40">
+                                                  viewBox="65.1 102.4 367.4 295.19999999999993" width="80" height="40">
                                                   <linearGradient id="a"
                                                     gradientTransform="scale(115.9464 -115.9464) rotate(30.578 8.401 .224)"
                                                     gradientUnits="userSpaceOnUse" x1="1.511" x2="1.657" y1="1.192"
@@ -1282,7 +1332,7 @@
                           <div class="col-md-12" style="padding: 0.5em;">
                             <div
                               class="card h-md-100 h-100 scrollbar-overlay overflow-auto btnp_bds_ajusco os-host os-theme-dark os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition os-host-overflow os-host-overflow-y"
-                              style="border: 1px solid rgb(255, 0, 0); height: 25rem !important;">
+                              style="border: 1px solid lime; height: 25rem !important;">
                               <div class="os-content" style="padding: 0px; height: auto; width: 100%;">
                                 <div id="div_bds_list_ajusco" style="padding: 0.5em;">
                                   <div class="card shadow-none rounded-0 btn-aju-bds">
@@ -1443,7 +1493,7 @@
                                         <button
                                           class="accordion-button btn btn-falcon-success d-block w-100 py-2 px-3 border-0 text-start rounded-0 shadow-none collapsed"
                                           onclick="fn_detalle_bds('BASE DE DATOS','','TV Azteca Ajusco','PostgreSQL','','GENERAL')"
-                                          style=" border: 1px solid red !important; padding-bottom: 0em !important;">
+                                          >
                                           <div class="row mt-2">
                                             <div class="col-3 " style="text-align: center;">
                                               <p class="h6"><svg xmlns="http://www.w3.org/2000/svg"
@@ -1466,11 +1516,11 @@
                                               <p></p>
                                             </div>
                                             <div class="col-7 mt-2 mb-0">
-                                              <p class="h4 mb-0"
+                                              <!-- <p class="h4 mb-0"
                                                 style="color: red; text-align: center; justify-content: center;"><i
                                                   class="fa-thin fa-tally-4" style="color: #0b1727;"></i><i
-                                                  class="fa-solid fa-shuffle"
-                                                  style="color: red; font-size: 22px;"></i> 1</p>
+                                                  class="fa-solid fa-shuffle" style="color: red; font-size: 22px;"></i>
+                                                1</p> -->
                                             </div>
                                           </div>
                                         </button>
@@ -1487,8 +1537,7 @@
                                           <div class="row mt-2">
                                             <div class="col-3 " style="text-align: center;">
                                               <p class="h6"><svg xmlns="http://www.w3.org/2000/svg"
-                                                  viewBox="65.1 102.4 367.4 295.19999999999993" width="80"
-                                                  height="40">
+                                                  viewBox="65.1 102.4 367.4 295.19999999999993" width="80" height="40">
                                                   <linearGradient id="a"
                                                     gradientTransform="scale(115.9464 -115.9464) rotate(30.578 8.401 .224)"
                                                     gradientUnits="userSpaceOnUse" x1="1.511" x2="1.657" y1="1.192"
@@ -1599,3 +1648,9 @@
     </div>
   </div>
 </div>
+
+<!-- <ngx-loading [show]="loading"></ngx-loading> -->
+<ngx-spinner bdColor = "#0b1727" size = "medium" color = "#cf013"
+template = "<img src='assets/img/logo_rc.png' class='img-pulse'/>" [fullScreen] = "true" class="d-flex justify-content-center">
+<p style="color: white" class="mt-4" > Cargando... </p>
+</ngx-spinner>

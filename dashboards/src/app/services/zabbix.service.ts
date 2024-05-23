@@ -202,6 +202,30 @@ export class ZabbixService {
     return data.result[0].groupid;
   }
 
+  // Función para obtener el ID del grupo de hosts
+  async getHostsByGroup(authToken: string, groupId: string): Promise<string> {
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'host.get',
+        params: {
+          output: ['hostid', 'name'],
+          selectInterfaces: ['interfaceid', 'ip'],
+          groupids: groupId,
+          selectInventory: ["os_full"],
+        },
+        auth: authToken,
+        id: 2
+      })
+    });
+    const data = await response.json();
+    return data.result;
+  }
+
   // Función para obtener el total de memoria del grupo de hosts
   async getTotalMemory(authToken: string, groupId: string): Promise<number> {
     const response = await fetch(this.url, {
@@ -406,37 +430,6 @@ export class ZabbixService {
     return data.result;
   }
 
-  // Función para obtener el número de hosts con problemas de ping ICMP en un grupo
-  async getHostsWithICMPProblems(authToken: string, groupId: string): Promise<number> {
-    const response = await fetch(this.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'trigger.get',
-        params: {
-          output: ['triggerid'],
-          groupids: groupId,
-          expandDescription: true,
-          filter: {
-            value: 1 // Problemas activos
-          },
-          search: {
-            description: 'Unavailable by ICMP ping' // Descripción del problema de ICMP
-          },
-          limit: 1,
-          countOutput: true,
-        },
-        auth: authToken,
-        id: 9
-      })
-    });
-    const data = await response.json();
-    return data.result;
-  }
-
   // Función para obtener el total de Virtuales del grupo de hosts
   async getTotalVirtuales(authToken: string, groupId: string): Promise<any> {
     const response = await fetch(this.url, {
@@ -464,8 +457,128 @@ export class ZabbixService {
     return data.result;
   }
 
-    // Función para obtener el total de equipos en un grupo BD
-    async getTotalHostsInGroupBD(authToken: string, hostName: string, key: string, value: string): Promise<number> {
+  // Función para obtener el total de equipos en un grupo BD
+  async getTotalHostsInGroupBD(authToken: string, hostName: string, key: string, value: string): Promise<number> {
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'host.get',
+        params: {
+          output: 'extend',
+          // selectTags: 'extend',
+          tags: [{ "tag": key, "value": value, "operator": "1" }],
+          search: {
+            name: hostName,
+          }
+        },
+        auth: authToken,
+        id: 11
+      })
+    });
+    const data = await response.json();
+    return data.result.length;
+  }
+
+  public async checkItem(authToken: string, hostId: string, item: string): Promise<any> {
+
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'item.get',
+        params: {
+          hostids: hostId,
+          output: ["hostid", "lastvalue", "name"],
+          search: {
+            name: item,
+          },
+          sortfield: 'name',
+        },
+        auth: authToken,
+        id: 11
+      })
+    });
+    const data = await response.json();
+    // const itemId = data.result[0].lastvalue;
+
+    // const lastValue = await this.zabbixApi('history.get', {
+    //   history: 3, // Tipo 3 para valores de flotante (trapper, simple checks)
+    //   itemids: itemId,
+    //   sortfield: 'clock',
+    //   sortorder: 'DESC',
+    //   limit: 1,
+    // });
+    // console.log(data);
+    return data.result.length > 0 ? data.result[0].lastvalue: 0;
+  }
+
+  public async checkItemAllData(authToken: string, hostId: string, item: string): Promise<any> {
+
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'item.get',
+        params: {
+          hostids: hostId,
+          output: "extend",
+          search: {
+            name: item,
+          },
+          sortfield: 'name',
+        selectHosts: ["hostid", "host"],
+        },
+        auth: authToken,
+        id: 11
+      })
+    });
+    const data = await response.json();
+    return data.result;
+  }
+
+  // Función para obtener el número de hosts con problemas en un grupo
+  async getHostsWithProblemsByGroup(authToken: string, groupId: string, description: string): Promise<number> {
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'trigger.get',
+        params: {
+          output: ['triggerid'],
+          groupids: groupId,
+          expandDescription: true,
+          filter: {
+            value: 1 // Problemas activos
+          },
+          search: {
+            description: description // Descripción del problema de ICMP
+          },
+          limit: 1,
+          countOutput: true,
+        },
+        auth: authToken,
+        id: 9
+      })
+    });
+    const data = await response.json();
+    return data.result;
+  }
+
+    // Función para obtener el número de hosts con problemas en un grupo
+    async getHostsWithProblems(authToken: string, hostId: string, description: string): Promise<number> {
       const response = await fetch(this.url, {
         method: 'POST',
         headers: {
@@ -473,22 +586,25 @@ export class ZabbixService {
         },
         body: JSON.stringify({
           jsonrpc: '2.0',
-          method: 'host.get',
+          method: 'trigger.get',
           params: {
             output: 'extend',
-            // selectTags: 'extend',
-            tags: [{"tag": key, "value": value, "operator": "1"}],
+            expandDescription: true,
+            hostids: hostId,
+            filter: {
+              value: 1 // Problemas activos
+            },
             search: {
-              name: hostName,
-            }
+              description: description // Descripción del problema de ICMP
+            },
+            sortfield: "priority",
+            sortorder: "DESC"
           },
           auth: authToken,
-          id: 11
+          id: 9
         })
       });
       const data = await response.json();
-      return data.result.length;
+      return data.result.length > 0 ? data.result[0].description : '';
     }
-
-
 }

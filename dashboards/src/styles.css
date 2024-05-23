@@ -2,3 +2,67 @@ body {
   background-color: #0b1727;
   color: #fff;
 }
+
+app-modal-servidores-fisicos {
+  background-color: #0b1727;
+  color: #fff;
+}
+
+app-modal-memoria {
+  background-color: #0b1727;
+  color: #fff;
+}
+
+app-modal-cpu {
+  background-color: #0b1727;
+  color: #fff;
+}
+
+app-modal-disco {
+  background-color: #0b1727;
+  color: #fff;
+}
+
+.modal-xl {
+  max-width: 98% !important;
+}
+
+.p-knob-text {
+  font-size: 16px;
+  fill: #fff !important;
+}
+
+.p-knob-text::after {
+  content: '%';
+  fill: #fff !important;
+}
+
+.p-knob-text::before {
+  content: '%';
+  fill: #fff !important;
+}
+
+.color-red {
+  color: red;
+}
+
+.card-modal {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  border-radius: 20px;
+}
+
+.img-pulse {
+  animation: pulse 1s linear infinite;
+}
+
+@keyframes pulse {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(1.1);
+  }
+  100% {
+      transform: scale(1);
+  }
+}

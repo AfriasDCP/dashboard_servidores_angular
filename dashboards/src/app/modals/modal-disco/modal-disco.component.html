@@ -1,0 +1,69 @@
+<div class="modal-header d-flex justify-content-between align-items-center">
+  <h4 class="modal-title">Detalles de Discos <b>{{Sitio}}</b></h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="container-fluid">
+  <div class="row m-4">
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center">
+      <div>
+        <i class="fa-solid fa-hard-drive fa-3x text-primary"></i>
+        <h4 class="mt-2">{{totalDisco}}</h4>
+        <h4 class="text-secondary">Disco</h4>
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center">
+      <div>
+        <h4 class="mt-2">{{disponibleDisco}}</h4>
+        <h4 class="text-secondary">Disponible</h4>
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center">
+      <div>
+        <h4 class="mt-2">{{utilizadoDisco}} </h4>
+        <h4 class="text-secondary">Utilizado</h4>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4 mb-4">
+    <div class="col-12">
+      <p-table [value]="discos" styleClass="p-datatable-gridlines p-datatable-striped"
+      [rows]="20"
+      [rowsPerPageOptions]="[20, 50, 100, 300, 500, 1000]"
+      [scrollable]="true"
+    scrollHeight="400px">
+        <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="hostname">
+                Servidor <p-sortIcon field="hostname" />
+              </th>
+              <th pSortableColumn="name">
+                Disco <p-sortIcon field="name" />
+              </th>
+              <th pSortableColumn="freeSpace">
+                Disponible <p-sortIcon field="freeSpace" />
+              </th>
+              <th pSortableColumn="usedSpace">
+                % Utilizado <p-sortIcon field="usedSpace" />
+              </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-host>
+            <tr>
+              <td>{{ host.hostname }}</td>
+              <td>{{ host.name }}</td>
+              <td>{{ host.freeSpace }}</td>
+              <td [ngClass]="{'color-red': host.usedSpace >= 80, 'text-white': host.usedSpace < 80}">{{ host.usedSpace }}%</td>
+              <!-- <td>
+                <i class="fa-solid fa-triangle-exclamation color-red fa-2x" title = "{{hostStatus[host.hostid]}}" *ngIf="hostStatus[host.hostid] != ''"></i>
+              </td> -->
+              <!-- <td>{{ host.interfaces[0].ip }}</td> -->
+            </tr>
+        </ng-template>
+    </p-table>
+    <h4>Total de registros: {{discos.lenght}}</h4>
+    </div>
+  </div>
+</div>
