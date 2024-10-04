@@ -168,7 +168,7 @@ export class ZabbixService {
         jsonrpc: '2.0',
         method: 'user.login',
         params: {
-          user: 'GRAFANAUSER',
+          username: 'GRAFANAUSER',
           password: 'Z4bbGR4F4N2k23#'
         },
         id: 1
@@ -430,6 +430,29 @@ export class ZabbixService {
     return data.result;
   }
 
+    // Función para obtener el total de equipos en un grupo
+    async getHost(authToken: string, hostId: string): Promise<number> {
+      const response = await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'host.get',
+          params: {
+            output: 'extend',
+            hostids: hostId
+          },
+          auth: authToken,
+          id: 8
+        })
+      });
+      const data = await response.json();
+      return data.result[0];
+    }
+
+
   // Función para obtener el total de Virtuales del grupo de hosts
   async getTotalVirtuales(authToken: string, groupId: string): Promise<any> {
     const response = await fetch(this.url, {
@@ -441,9 +464,9 @@ export class ZabbixService {
         jsonrpc: '2.0',
         method: 'item.get',
         params: {
-          output: ["hostid", "lastvalue", "name"],
+          output: ["hostid", "lastvalue", "name", "host"],
           search: {
-            name: ["VM Guest State", "VM Guest OS"]
+            name: "VM Guest State"
           },
           groupids: groupId,
           searchByAny: true
@@ -456,6 +479,33 @@ export class ZabbixService {
 
     return data.result;
   }
+
+    // Función para obtener el total de Virtuales  del grupo de hosts
+    async getTotalVirtualesSO(authToken: string, groupId: any): Promise<any> {
+      const response = await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'item.get',
+          params: {
+            output:  ["hostid", "lastvalue", "name", "host"],
+            search: {
+              name: "VM Guest OS"
+            },
+            groupids: groupId,
+            searchByAny: true
+          },
+          auth: authToken,
+          id: 10
+        })
+      });
+      const data = await response.json();
+
+      return data.result;
+    }
 
   // Función para obtener el total de equipos en un grupo BD
   async getTotalHostsInGroupBD(authToken: string, hostName: string, key: string, value: string): Promise<number> {
@@ -470,7 +520,7 @@ export class ZabbixService {
         params: {
           output: 'extend',
           // selectTags: 'extend',
-          tags: [{ "tag": key, "value": value, "operator": "1" }],
+          tags: [{ "tag": key, "value": value}],
           search: {
             name: hostName,
           }
@@ -480,7 +530,7 @@ export class ZabbixService {
       })
     });
     const data = await response.json();
-    return data.result.length;
+    return data.result;
   }
 
   public async checkItem(authToken: string, hostId: string, item: string): Promise<any> {
@@ -515,7 +565,7 @@ export class ZabbixService {
     //   sortorder: 'DESC',
     //   limit: 1,
     // });
-    // console.log(data);
+    console.log(data);
     return data.result.length > 0 ? data.result[0].lastvalue: 0;
   }
 
@@ -577,34 +627,35 @@ export class ZabbixService {
     return data.result;
   }
 
-    // Función para obtener el número de hosts con problemas en un grupo
-    async getHostsWithProblems(authToken: string, hostId: string, description: string): Promise<number> {
-      const response = await fetch(this.url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'trigger.get',
-          params: {
-            output: 'extend',
-            expandDescription: true,
-            hostids: hostId,
-            filter: {
-              value: 1 // Problemas activos
-            },
-            search: {
-              description: description // Descripción del problema de ICMP
-            },
-            sortfield: "priority",
-            sortorder: "DESC"
+  // Función para obtener el número de hosts con problemas en un grupo
+  async getHostsWithProblems(authToken: string, hostId: string, description: string): Promise<number> {
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'trigger.get',
+        params: {
+          output: 'extend',
+          expandDescription: true,
+          hostids: hostId,
+          filter: {
+            value: 1 // Problemas activos
           },
-          auth: authToken,
-          id: 9
-        })
-      });
-      const data = await response.json();
-      return data.result.length > 0 ? data.result[0].description : '';
-    }
+          search: {
+            description: description // Descripción del problema de ICMP
+          },
+          sortfield: "priority",
+          sortorder: "DESC"
+        },
+        auth: authToken,
+        id: 9
+      })
+    });
+    const data = await response.json();
+    return data.result.length > 0 ? data.result[0].description : '';
+  }
+
 }

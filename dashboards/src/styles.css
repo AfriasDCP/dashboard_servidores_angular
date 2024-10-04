@@ -23,6 +23,16 @@ app-modal-disco {
   color: #fff;
 }
 
+app-modal-servidores-virtuales {
+  background-color: #0b1727;
+  color: #fff;
+}
+
+app-modal-bd {
+  background-color: #0b1727;
+  color: #fff;
+}
+
 .modal-xl {
   max-width: 98% !important;
 }

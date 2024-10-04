@@ -1,0 +1,173 @@
+<div class="modal-header d-flex justify-content-between align-items-center">
+  <h4 class="modal-title">Detalles de Bases de datos <b>{{Sitio}}</b></h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="container-fluid">
+  <!-- Querétaro -->
+  <div class="row m-4" *ngIf="tag == 'Queretaro'">
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/mariadb.png" style="width: 80px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaMariaDB - abajoMariaDB}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoMariaDB}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/mysql.svg" style="width: 160px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaMySQL - abajoMySQL}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoMySQL}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/sql.svg" style="width: 130px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaSQLServer - abajoSQLServer}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoSQLServer}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+  </div>
+  <!-- Fin Querétaro -->
+  <!-- Tultitlán -->
+  <div class="row m-4" *ngIf="tag == 'Tultitlan'">
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/mariadb.png" style="width: 80px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaMariaDB - abajoMariaDB}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoMariaDB}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/mysql.svg" style="width: 160px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaMySQL - abajoMySQL}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoMySQL}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-4 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/vertica.svg" style="width: 130px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaVertica - abajoVertica}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoVertica}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+  </div>
+  <!-- Fin Tultitlán -->
+  <!-- Azteca -->
+  <div class="row m-4" *ngIf="tag == 'Tv Azteca Ajusco'">
+    <div class="col-3 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/mariadb.png" style="width: 80px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaMariaDB - abajoMariaDB}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoMariaDB}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-2 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/mysql.svg" style="width: 160px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaMySQL - abajoMySQL}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoMySQL}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-2 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/sql.svg" style="width: 160px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaSQLServer - abajoSQLServer}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoSQLServer}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-2 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/postgresql.svg" style="width: 80px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaPostgreSQL - abajoPostgreSQL}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoPostgreSQL}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+    <div class="col-3 text-center p-3 card-modal d-flex justify-content-center align-items-center flex-wrap">
+      <img src="assets/img/vertica.svg" style="width: 130px;">
+      <div class="d-flex justify-content-center flex-basis-100 mt-2">
+        <h4 class="text-white">{{arribaVertica - abajoVertica}}</h4>
+        <img src="assets/img/UP.svg" class="img-icon ml-2">
+        <h4 class="text-white ml-2">{{abajoVertica}}</h4>
+        <img src="assets/img/DOWN.svg" class="img-icon ml-2">
+      </div>
+    </div>
+  </div>
+  <!-- Fin Azteca -->
+  <div class="row mt-4 mb-4">
+    <div class="col-12">
+      <p-table [value]="hosts" styleClass="p-datatable-gridlines p-datatable-striped"
+      [rows]="20"
+      [rowsPerPageOptions]="[20, 50, 100, 300, 500, 1000]"
+      [scrollable]="true"
+    scrollHeight="400px">
+        <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="hostname">
+                Servidor <p-sortIcon field="hostname" />
+              </th>
+              <th pSortableColumn="motor" class="text-center">
+                Motor <p-sortIcon field="motor" />
+              </th>
+              <th class="text-center">
+                Estatus
+              </th>
+              <th class="text-center">
+                Bloqueos
+              </th>
+              <th class="text-center">
+                Consultas
+              </th>
+              <th class="text-center">
+                Conexiones
+              </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-host>
+            <tr>
+              <td [ngClass]="{'color-red': host.order > 0, 'text-white': host.order == 0}">{{ host.hostname }}</td>
+              <td class="text-center">
+                <img src="{{host.img}}" [ngStyle]="host.motor == 'MariaDB' ? {'width': '50px'} : {'width': '80px'}">
+              </td>
+              <td class="text-center">
+                <i class="fa-solid fa-angles-down m-2" style="color: red; font-size: 22px;" *ngIf="host.estatus != ''"></i>
+              </td>
+              <td class="text-center">
+                <i class="fa-solid fa-lock m-2" style="color: red; font-size: 22px;" *ngIf="host.bloqueos != ''"></i>
+              </td>
+              <td class="text-center">
+                <i class="fa-solid fa-stopwatch m-2" style="color: red; font-size: 22px;" *ngIf="host.consultas != ''"></i>
+              </td>
+              <td class="text-center">
+                <i class="fa-solid fa-shuffle m-2" style="color: red; font-size: 22px;" *ngIf="host.conexiones != ''"></i>
+              </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <h4>Total de registros: {{hosts.length}}</h4>
+    </div>
+  </div>
+</div>

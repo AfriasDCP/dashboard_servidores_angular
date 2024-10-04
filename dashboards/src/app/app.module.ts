@@ -15,6 +15,8 @@ import { NgxLoadingModule, ngxLoadingAnimationTypes } from "ngx-loading";
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ModalMemoriaComponent } from './modals/modal-memoria/modal-memoria.component';
 import { ModalDiscoComponent } from './modals/modal-disco/modal-disco.component';
+import { ModalServidoresVirtualesComponent } from './modals/modal-servidores-virtuales/modal-servidores-virtuales.component';
+import { ModalBdComponent } from './modals/modal-bd/modal-bd.component';
 
 
 @NgModule({
@@ -23,7 +25,9 @@ import { ModalDiscoComponent } from './modals/modal-disco/modal-disco.component'
     ModalServidoresFisicosComponent,
     ModalCpuComponent,
     ModalMemoriaComponent,
-    ModalDiscoComponent
+    ModalDiscoComponent,
+    ModalServidoresVirtualesComponent,
+    ModalBdComponent
   ],
   imports: [
     BrowserModule,
